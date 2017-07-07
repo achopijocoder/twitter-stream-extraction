@@ -1,0 +1,15 @@
+﻿
+
+
+
+1. Create new asp.net core console app
+
+2. Add nuget packages:
+	- MailKit for sending mail
+	- YweetinviAPI for communication with Twitter API
+	- Microsoft.Extensions.Configuration for configure application from appsettings.json file
+	- Microsoft.Extensions.Configuration.Json
+
+3. Add appsettings.dev.json and appsettings.json
+
+4. 
