@@ -1,6 +1,4 @@
-﻿using MailKit.Net.Smtp;
-using Microsoft.Extensions.Configuration;
-using MimeKit;
+﻿using Microsoft.Extensions.Configuration;
 using System;
 using System.IO;
 using Tweetinvi.Models;
@@ -23,21 +21,38 @@ namespace TwitterStreamExtractor
         /// <summary>
         /// Interface for different implementations for twitterStreamAction
         /// </summary>
-        private static ITwitterStreamAction twitterStreamAction;
+        private static ITwitterStreamConfiguration twitterStreamAction;
+
+        /// <summary>
+        /// Configuration service for the mail log
+        /// </summary>
+        private static MailConfiguration mailConfig;
 
         public static void Main(string[] args)
         {
+            #region Configuration
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.dev.json", optional: true, reloadOnChange: true);
 
             Configuration = builder.Build();
 
-            twitterStreamAction = new TwitterStreamActionMyAPP();
+            //Configure Mail notification service
+            mailConfig = new MailConfiguration(
+                    Configuration["Mail:FromAddress"],
+                    Configuration["Mail:FromAddressTitle"],
+                    Configuration["Mail:ToAddress"],
+                    Configuration["Mail:ToAdressTitle"],
+                    Configuration["Mail:Subject"],
+                    Configuration["Mail:SmtpServer"],
+                    int.Parse(Configuration["Mail:SmtpPortNumber"]),
+                    Configuration["Mail:Password"]
+                );
 
-            Mail.SendMail(Configuration, " Stopped " );
+            #endregion
 
-            Console.ReadKey();
+            twitterStreamAction = new TwitterStreamConfigurationMyAPP();
+
             try
             {
                 var creds = new TwitterCredentials(
@@ -63,20 +78,20 @@ namespace TwitterStreamExtractor
                 stream.DisconnectMessageReceived += (sender, e) =>
                 {
                     Console.WriteLine("Disconnected'" + e.DisconnectMessage.Reason + "'");
-                    Mail.SendMail(Configuration, " Disconnected " + e.DisconnectMessage.Reason);
+                    Mail.SendMail(mailConfig, " Disconnected " + e.DisconnectMessage.Reason);
                 };
 
                 stream.StreamStopped += (sender, e) =>
                 {
                     Console.WriteLine("Stopped '" + e.DisconnectMessage + "'");
-                    Mail.SendMail(Configuration, " Stopped " + e.DisconnectMessage.Reason);
+                    Mail.SendMail(mailConfig, " Stopped " + e.DisconnectMessage.Reason);
                 };
 
                 stream.StartStreamMatchingAnyCondition();
             }
             catch (Exception e)
             {
-                Mail.SendMail(Configuration, " EXCEPTION " + e.Message);
+                Mail.SendMail(mailConfig, " EXCEPTION " + e.Message);
             }
         }
     }

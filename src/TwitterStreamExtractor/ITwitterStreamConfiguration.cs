@@ -4,7 +4,7 @@ using System.Text;
 
 namespace TwitterStreamExtractor
 {
-    public interface ITwitterStreamAction
+    public interface ITwitterStreamConfiguration
     {
         /// <summary>
         /// Returns the list of hashtags to track

@@ -4,14 +4,14 @@ using System.Text;
 
 namespace TwitterStreamExtractor
 {
-    public class TwitterStreamActionMyAPP : ITwitterStreamAction
+    public class TwitterStreamConfigurationMyAPP : ITwitterStreamConfiguration
     {
-        List<string> ITwitterStreamAction.GetTrackedHashtags()
+        List<string> ITwitterStreamConfiguration.GetTrackedHashtags()
         {
             throw new NotImplementedException();
         }
 
-        void ITwitterStreamAction.NewTweetPublished(string[] hashtag)
+        void ITwitterStreamConfiguration.NewTweetPublished(string[] hashtag)
         {
             throw new NotImplementedException();
         }
