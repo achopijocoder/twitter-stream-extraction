@@ -8,12 +8,12 @@ namespace TwitterStreamExtractor
     {
         List<string> ITwitterStreamConfiguration.GetTrackedHashtags()
         {
-            throw new NotImplementedException();
+            return new List<string>() { "#test" };
         }
 
         void ITwitterStreamConfiguration.NewTweetPublished(string[] hashtag)
         {
-            throw new NotImplementedException();
+            return;
         }
     }
 }

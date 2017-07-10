@@ -1,5 +1,5 @@
 ﻿
-namespace TwitterStreamExtractor.Utils
+namespace TwitterStreamExtractor.Utils.Mail
 {
     public class MailConfiguration
     {

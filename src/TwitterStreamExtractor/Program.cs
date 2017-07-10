@@ -2,7 +2,7 @@
 using System;
 using System.IO;
 using Tweetinvi.Models;
-using TwitterStreamExtractor.Utils;
+using TwitterStreamExtractor.Utils.Mail;
 
 namespace TwitterStreamExtractor
 {
@@ -31,6 +31,7 @@ namespace TwitterStreamExtractor
         public static void Main(string[] args)
         {
             #region Configuration
+
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.dev.json", optional: true, reloadOnChange: true);

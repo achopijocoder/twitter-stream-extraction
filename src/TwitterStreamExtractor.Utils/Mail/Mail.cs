@@ -2,7 +2,7 @@
 using MimeKit;
 using System;
 
-namespace TwitterStreamExtractor.Utils
+namespace TwitterStreamExtractor.Utils.Mail
 {
     public class Mail
     {
