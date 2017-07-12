@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace TwitterStreamExtractor
+namespace TwitterStreamExtractor.Core.Service
 {
-    public interface ITwitterStreamConfiguration
+    public interface IDayStatService
     {
         /// <summary>
         /// Returns the list of hashtags to track
@@ -16,6 +16,6 @@ namespace TwitterStreamExtractor
         /// Action to take when a new Tweet that matches the tracked hashtags has been published 
         /// </summary>
         /// <param name="hashtag"></param>
-        void NewTweetPublished(string[] hashtag);
+        void NewTweetPublished(string[] hashtags, DateTime d);
     }
 }

@@ -1,7 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System;
-using System.IO;
 using Tweetinvi.Models;
+using TwitterStreamExtractor.Core.Infrastructure;
+using TwitterStreamExtractor.Core.Service;
 using TwitterStreamExtractor.Utils.Mail;
 
 namespace TwitterStreamExtractor
@@ -21,7 +22,7 @@ namespace TwitterStreamExtractor
         /// <summary>
         /// Interface for different implementations for twitterStreamAction
         /// </summary>
-        private static ITwitterStreamConfiguration twitterStreamAction;
+        private static IDayStatService _dayStatService;
 
         /// <summary>
         /// Configuration service for the mail log
@@ -32,40 +33,26 @@ namespace TwitterStreamExtractor
         {
             #region Configuration
 
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.dev.json", optional: true, reloadOnChange: true);
+            //Configure app
+            Configuration = AppConfiguration.ConfigureApp("appsettings.dev.json");
 
-            Configuration = builder.Build();
+            //Configure mail service
+            mailConfig = AppConfiguration.ConfigureMail(Configuration);
 
-            //Configure Mail notification service
-            mailConfig = new MailConfiguration(
-                    Configuration["Mail:FromAddress"],
-                    Configuration["Mail:FromAddressTitle"],
-                    Configuration["Mail:ToAddress"],
-                    Configuration["Mail:ToAdressTitle"],
-                    Configuration["Mail:Subject"],
-                    Configuration["Mail:SmtpServer"],
-                    int.Parse(Configuration["Mail:SmtpPortNumber"]),
-                    Configuration["Mail:Password"]
-                );
+            //Configure twitter credentials
+            _credentials = AppConfiguration.ConfigureTwitterCredentials(Configuration);
+
+            //configure twitterStreamAction
+            _dayStatService = new DayStatsService(Configuration);
 
             #endregion
 
-            twitterStreamAction = new TwitterStreamConfigurationMyAPP();
-
             try
             {
-                var creds = new TwitterCredentials(
-                    Configuration["TwitterAPI:CONSUMERKEY"],
-                    Configuration["TwitterAPI:CONSUMER_SECRET"],
-                    Configuration["TwitterAPI:ACCESS_TOKEN"],
-                    Configuration["TwitterAPI:ACCESS_TOKEN_SECRET"]);
-
-                var stream = Tweetinvi.Stream.CreateFilteredStream(creds);
+                var stream = Tweetinvi.Stream.CreateFilteredStream(_credentials);
 
                 //add tracks to follow
-                foreach (string s in twitterStreamAction.GetTrackedHashtags())
+                foreach (string s in _dayStatService.GetTrackedHashtags())
                 {
                     stream.AddTrack(s);
                 }
@@ -73,7 +60,7 @@ namespace TwitterStreamExtractor
                 stream.MatchingTweetReceived += (sender, e) =>
                 {
                     if (e.Tweet.IsRetweet) return;
-                    twitterStreamAction.NewTweetPublished(e.MatchingTracks);
+                    _dayStatService.NewTweetPublished(e.MatchingTracks, DateTime.Now);
                 };
 
                 stream.DisconnectMessageReceived += (sender, e) =>

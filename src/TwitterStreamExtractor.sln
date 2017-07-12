@@ -5,7 +5,9 @@ VisualStudioVersion = 15.0.26430.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TwitterStreamExtractor", "TwitterStreamExtractor\TwitterStreamExtractor.csproj", "{B137DDEF-0199-4DFD-AF78-343FE3630E75}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwitterStreamExtractor.Utils", "TwitterStreamExtractor.Utils\TwitterStreamExtractor.Utils.csproj", "{7CC29549-4F48-4C26-B300-94FCB5BE6D9D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TwitterStreamExtractor.Utils", "TwitterStreamExtractor.Utils\TwitterStreamExtractor.Utils.csproj", "{7CC29549-4F48-4C26-B300-94FCB5BE6D9D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwitterStreamExtractor.Core", "TwitterStreamExtractor.Core\TwitterStreamExtractor.Core.csproj", "{97358986-9B07-414F-B504-6453DC04E366}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{7CC29549-4F48-4C26-B300-94FCB5BE6D9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7CC29549-4F48-4C26-B300-94FCB5BE6D9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7CC29549-4F48-4C26-B300-94FCB5BE6D9D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97358986-9B07-414F-B504-6453DC04E366}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97358986-9B07-414F-B504-6453DC04E366}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97358986-9B07-414F-B504-6453DC04E366}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97358986-9B07-414F-B504-6453DC04E366}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
