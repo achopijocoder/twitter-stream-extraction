@@ -31,9 +31,9 @@ namespace TwitterStreamExtractor.Core.Data
             }
         }
 
-        public async Task<DayStats> GetDayStat(string id)
+        public async Task<DayStats> GetDayStat(DateTime date)
         {
-            var filter = Builders<DayStats>.Filter.Eq("Id", id);
+            var filter = Builders<DayStats>.Filter.Eq("Date", date);
 
             try
             {
@@ -75,15 +75,16 @@ namespace TwitterStreamExtractor.Core.Data
             }
         }
 
-        public async Task<UpdateResult> UpdateDayStat(string id, DateTime d)
+        public async Task<UpdateResult> UpdateDayStat(DateTime d)
         {
             //hay que calcular el numero de samples hasta el momento actual
-            var numSamples = d.Hour * d.Minute;
+            var numSamples = d.Hour * 60 + d.Minute;
 
-            var filter = Builders<DayStats>.Filter.Eq(s => s.Id, id);
+            var filter = Builders<DayStats>.Filter.Eq(s => s.Date, new DateTime(d.Year, d.Month,d.Day,0,0,0));
             var update = Builders<DayStats>.Update
                             .Set(s => s.TotalSamples, numSamples)
-                            .Inc(s => s.TotalTweets, 1);
+                            .Inc(s => s.TotalTweets, 1)
+                            .Inc(s => s.Counters[d.Hour][d.Minute],1);
 
             try
             {
@@ -110,16 +111,6 @@ namespace TwitterStreamExtractor.Core.Data
                 // log or manage the exception
                 throw ex;
             }
-        }
-
-        // Demo function - full document update
-        public async Task<ReplaceOneResult> UpdateDayStatDocument(string id, string body)
-        {
-            var item = await GetDayStat(id) ?? new DayStats();
-            //item.Body = body;
-            //item.UpdatedOn = DateTime.Now;
-
-            return await UpdateDayStat(id, item);
         }
 
         public async Task<DeleteResult> RemoveAllDayStat()
