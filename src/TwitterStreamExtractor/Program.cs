@@ -1,9 +1,13 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using Tweetinvi.Models;
 using TwitterStreamExtractor.Core.Infrastructure;
+using TwitterStreamExtractor.Core.Model;
 using TwitterStreamExtractor.Core.Service;
 using TwitterStreamExtractor.Utils.Mail;
+using Nito.AsyncEx;
 
 namespace TwitterStreamExtractor
 {
@@ -25,11 +29,21 @@ namespace TwitterStreamExtractor
         private static IDayStatService _dayStatService;
 
         /// <summary>
+        /// Interface for different implementations for twitterStreamAction
+        /// </summary>
+        private static ITrackedHashtagService _trackedHashtagService;
+
+        /// <summary>
         /// Configuration service for the mail log
         /// </summary>
         private static MailConfiguration mailConfig;
 
         public static void Main(string[] args)
+        {
+            AsyncContext.Run(() => MainAsync(args));
+        }
+
+        static async void MainAsync(string[] args)
         {
             #region Configuration
 
@@ -42,8 +56,11 @@ namespace TwitterStreamExtractor
             //Configure twitter credentials
             _credentials = AppConfiguration.ConfigureTwitterCredentials(Configuration);
 
-            //configure twitterStreamAction
+            //configure dayStats service
             _dayStatService = new DayStatsService(Configuration);
+
+            //configure trackedHashtags service
+            _trackedHashtagService = new TrackedHashtagService(Configuration);
 
             #endregion
 
@@ -51,10 +68,11 @@ namespace TwitterStreamExtractor
             {
                 var stream = Tweetinvi.Stream.CreateFilteredStream(_credentials);
 
+                IEnumerable<TrackedHashtag> hts = await _trackedHashtagService.GetTrackedHashtags();
                 //add tracks to follow
-                foreach (string s in _dayStatService.GetTrackedHashtags())
+                foreach (TrackedHashtag s in hts)
                 {
-                    stream.AddTrack(s);
+                    stream.AddTrack(s.HashTag);
                 }
 
                 stream.MatchingTweetReceived += (sender, e) =>

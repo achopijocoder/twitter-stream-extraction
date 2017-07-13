@@ -7,12 +7,6 @@ namespace TwitterStreamExtractor.Core.Service
     public interface IDayStatService
     {
         /// <summary>
-        /// Returns the list of hashtags to track
-        /// </summary>
-        /// <returns></returns>
-        List<string> GetTrackedHashtags();
-
-        /// <summary>
         /// Action to take when a new Tweet that matches the tracked hashtags has been published 
         /// </summary>
         /// <param name="hashtag"></param>
